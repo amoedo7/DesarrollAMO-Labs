@@ -29,3 +29,8 @@ jobs:
           path: |
             apps/ColorAMO/ColorAMO-v0.1.0-debug.apk
             apps/ColorAMO/ColorAMO-v0.1.0-debug.apk.sha256
+      - name: Publish candidate release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create coloramo-v0.1.0 ColorAMO-v0.1.0-debug.apk ColorAMO-v0.1.0-debug.apk.sha256 --title 'ColorAMO v0.1.0' --notes 'Candidate inicial de ColorAMO.' || gh release upload coloramo-v0.1.0 ColorAMO-v0.1.0-debug.apk ColorAMO-v0.1.0-debug.apk.sha256 --clobber
