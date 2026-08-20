@@ -10,7 +10,7 @@ Objetivo de cada app: primera versión funcional v0.1.0, estado candidate, build
 2. [x] CalculAMO — v0.1.0 candidate; CI Android #6 verde; APK + SHA-256 verificados (`021eb4dcd8cf845d89d0153eba1eb08fe4f399a9c9cf31676b13301931bb39ef`); PR #1 fusionado (`c095da67a33af09445df0943430de631bfbd967a`). Workflow de main publica GitHub Release v0.1.0; StoreAMO pendiente del soporte de descubrimiento de repos privados (StoreAMO-Catalog #2).
 3. [x] CronAMO — v0.1.0 candidate; CI Android #7 verde; 4 tests; APK real + SHA-256 verificados (`9dd9dcb91e394ebcb5135297b2eb7bd03e9e591f84428e028394e00a29cb2253`); PR #1 fusionado (`a8ee34b605d988136ba02a2f727aa3b7da9d649c`). Workflow de main publica GitHub Release v0.1.0; StoreAMO pendiente del soporte de descubrimiento de repos privados (StoreAMO-Catalog #2).
 4. [x] TemporizAMO — v0.1.0 candidate; CI Android #7 verde; 4 tests; APK real + SHA-256 verificados (`0582286941d47f9cea1e4e6c527ac9214e60ad3558b349ac8d3fad93b84e159d`); PR #1 fusionado (`73eb9c6a340d18ae6e626edc018399c12824e739`). Workflow de main publica GitHub Release v0.1.0; StoreAMO pendiente del soporte de descubrimiento de repos privados (StoreAMO-Catalog #2).
-5. [ ] NotasAMO
+5. [x] NotasAMO — v0.1.0 candidate; CI Android #1 verde; 4 tests; APK real + SHA-256 verificados (`5c195e8c74f37b648a8245bb373fb0562112f93986e0d2afe36eceb3f03b381f`); PR #1 fusionado (`7e1359f7b1b054a612e6a71e4090c4a20e0958f9`). Workflow de main publica GitHub Release v0.1.0; StoreAMO pendiente del soporte de descubrimiento de repos privados (StoreAMO-Catalog #2).
 6. [ ] TareasAMO
 7. [ ] ConversAMO
 8. [ ] PorcentAMO
