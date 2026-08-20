@@ -26,7 +26,7 @@ Objetivo de cada app: primera versión funcional v0.1.0, estado candidate, build
 18. [ ] GastAMO
 19. [ ] ContrasenAMO
 20. [ ] QRAMOMini
-21. [ ] ColorAMO
+21. [x] ColorAMO — v0.1.0 candidate en `apps/ColorAMO/`; 5 tests JUnit; Android CI verde; APK real + SHA-256 verificados (`85c114f3041a33a5081ab029a137518f2bbc15a36dda0be5e98c0ac3c8c1da16`); PR #2 fusionado (`947ee2bb4fe03ea2315e9e02626c7076f33e1b40`). Workflow de main publica release `coloramo-v0.1.0`; StoreAMO bloqueado por discovery de manifiestos anidados/privados.
 22. [ ] ReglaAMO
 23. [ ] EdadAMO
 24. [ ] FechaAMO
