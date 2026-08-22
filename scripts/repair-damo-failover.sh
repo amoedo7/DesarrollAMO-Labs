@@ -2,12 +2,11 @@
 set -u
 
 # DAMO emergency failover repair for OpenClaw.
-# Safe properties:
-# - never changes the configured primary model
+# - preserves the configured primary model
 # - creates a timestamped backup before writes
-# - only installs fallbacks that pass a live smoke probe
-# - leaves existing fallback config untouched if no healthy alternative is found
-# - does not print API keys or secret values
+# - installs only fallbacks that pass a live smoke probe
+# - leaves fallback config untouched if no healthy alternative is found
+# - never prints API keys or secret values
 
 STAMP="$(date +%Y%m%d-%H%M%S)"
 STATE_DIR="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
@@ -23,11 +22,9 @@ if ! command -v openclaw >/dev/null 2>&1; then
   exit 20
 fi
 
-OPENCLAW_BIN="$(command -v openclaw)"
-echo "openclaw: $OPENCLAW_BIN"
+echo "openclaw: $(command -v openclaw)"
 openclaw --version || true
 
-# Backup only state/config surfaces this repair may cause OpenClaw to rewrite.
 if [ -f "$STATE_DIR/openclaw.json" ]; then
   cp -a "$STATE_DIR/openclaw.json" "$BACKUP_DIR/openclaw.json.before"
 fi
@@ -49,7 +46,6 @@ echo "--- config/model before ---"
 openclaw config get agents.defaults.model --json || true
 openclaw models fallbacks list --plain || true
 
-# Read-only lint first; repair only if lint reports a problem.
 echo
 echo "--- doctor lint ---"
 if ! openclaw doctor --lint --json; then
@@ -114,7 +110,6 @@ probe_model() {
     return 2
   fi
 
-  # Do not echo provider payloads here; they can include verbose diagnostics.
   echo "FAIL"
   return 1
 }
@@ -131,7 +126,7 @@ add_healthy() {
   fi
 }
 
-# 1) Keep any existing fallback that is actually alive now (max 8 probes).
+# Preserve healthy existing fallbacks first (maximum 8 tiny probes).
 count=0
 while IFS= read -r m; do
   [ -n "$m" ] || continue
@@ -140,8 +135,8 @@ while IFS= read -r m; do
   [ "$count" -ge 8 ] && break
 done < "$CURRENT_FALLBACKS"
 
-# 2) Discover one live model per already-configured alternate provider.
-# Order favors generally capable hosted providers; local Ollama is the final safety net.
+# Discover one live model per already configured alternate provider.
+# Hosted capable models first; local Ollama remains the final safety net.
 for provider in google groq mistral minimax zai z-ai openrouter cerebras ollama; do
   tried=0
   while IFS= read -r m; do
@@ -150,7 +145,6 @@ for provider in google groq mistral minimax zai z-ai openrouter cerebras ollama;
     grep -Fxq "$m" "$HEALTHY" 2>/dev/null && continue
     add_healthy "$m"
     tried=$((tried+1))
-    # At most two tiny probes per provider to keep repair cheap.
     [ "$tried" -ge 2 ] && break
   done < <(grep -E "^${provider}/" "$MODEL_LIST" 2>/dev/null || true)
 done
@@ -166,8 +160,6 @@ echo
 echo "--- healthy fallbacks ---"
 cat "$HEALTHY"
 
-# Replace only the fallback array, because every entry below passed a live probe.
-# Primary remains untouched.
 echo
 echo "Instalando cadena limpia de fallback..."
 openclaw models fallbacks clear
@@ -180,17 +172,15 @@ echo
 echo "--- fallbacks after ---"
 openclaw models fallbacks list --plain || true
 
-# Restart through the supported gateway lifecycle. Do not stop/start manually.
 echo
 echo "--- restart gateway ---"
-if ! openclaw gateway restart --safe; then
-  openclaw gateway restart --wait 30s || true
-fi
+# DAMO está degradado; reiniciamos inmediatamente usando el lifecycle soportado,
+# sin stop/start manual y sin dejar un trabajo roto bloqueando el reinicio.
+timeout 60s openclaw gateway restart --safe --skip-deferral || \
+  timeout 60s openclaw gateway restart --wait 30s || true
 sleep 2
 openclaw gateway status --deep --json || true
 
-# End-to-end smoke test through DAMO's main agent; fallback chain is allowed
-# because we do not pin a model on this turn.
 echo
 echo "--- DAMO end-to-end smoke test ---"
 if timeout 90s openclaw agent --agent main --message "Responde exactamente: DAMO_OK" --timeout 60 --json \
@@ -200,8 +190,8 @@ if timeout 90s openclaw agent --agent main --message "Responde exactamente: DAMO
   exit 0
 fi
 
-echo "El gateway está reparado y hay fallbacks vivos, pero el smoke del agente main falló."
-echo "Posible causa: la conversación actual quedó fijada a un modelo de usuario agotado."
+echo "Gateway/fallbacks reparados, pero el smoke del agente main falló."
+echo "La conversación puede seguir fijada a un modelo agotado."
 echo "En el chat con DAMO enviá como comando aislado: /model default"
 echo "Después: /reset soft"
 echo "REPAIR_STATUS=PARTIAL"
