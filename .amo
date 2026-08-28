@@ -1,0 +1,60 @@
+{
+  "schema": "desarrollamo.amo.v1",
+  "amo_version": "1.0.0",
+  "id": "desarrollamo-labs",
+  "name": "DesarrollAMO-Labs",
+  "kind": "experimental-sandbox",
+  "origin": "native",
+  "membership": "candidate",
+  "trust": "inspected",
+  "unit": {
+    "purpose": "Mantener un sandbox seguro y reproducible para experimentos, demos y candidatos antes de su promoción a piezas del ecosistema.",
+    "responsibility": "Permitir experimentación verificable sin convertir un experimento en producto, release o unidad confiable por auto-declaración.",
+    "owner": "human_responsible",
+    "capabilities": ["experimentation", "candidate-validation", "technical-demos"]
+  },
+  "model": {
+    "inherits": [],
+    "context": ["README.md", "scripts/validate_lab.py", ".github/workflows/lab-safety.yml"],
+    "rules": [
+      "Labs es un sandbox y no una fuente de autoridad sobre otras unidades.",
+      "Un candidato no puede auto-declararse verificado para StoreAMO.",
+      "No se versionan secretos, archivos .env ni claves privadas.",
+      "La promoción fuera de Labs requiere los gates y contratos de la unidad de destino."
+    ]
+  },
+  "map": {
+    "parent": "raizamo",
+    "children": [],
+    "relations": [
+      {"type": "feeds", "target": "circuitamo", "strength": "medium"},
+      {"type": "experiments-for", "target": "desarrollamo-units", "strength": "medium"}
+    ],
+    "covers": ["experiments/**", "candidates/**", "quarantine/**", "scripts/**"]
+  },
+  "policy": {
+    "cross_domain_changes_require_external_gates": true,
+    "self_declared_pass_allowed": false
+  },
+  "provenance": {
+    "source_uri": "https://github.com/amoedo7/DesarrollAMO-Labs",
+    "source_type": "git-repository",
+    "source_ref": "main"
+  },
+  "health": {
+    "checks": [
+      {
+        "id": "desarrollamo-labs-autocheck",
+        "type": "command",
+        "command": "bash scripts/autocheck.sh",
+        "cwd": ".",
+        "timeout_seconds": 180,
+        "description": "Valida el contrato canónico y la frontera de seguridad del sandbox Labs."
+      }
+    ]
+  },
+  "evidence": {
+    "status": "inspected",
+    "refs": ["README.md", "scripts/validate_lab.py", ".github/workflows/lab-safety.yml", "scripts/autocheck.sh"]
+  }
+}
