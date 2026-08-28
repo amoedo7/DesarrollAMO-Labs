@@ -17,4 +17,5 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - run: python scripts/validate_lab.py
+      - name: Canonical AutoCheck
+        run: bash scripts/autocheck.sh
