@@ -4,7 +4,7 @@ on:
     paths: ['apps/ColorAMO/**', '.github/workflows/coloramo-android.yml']
   push:
     branches: [main]
-    paths: ['apps/ColorAMO/**', '.github/workflows/coloramo-android.yml']
+    paths: ['apps/ColorAMO/**']
 permissions:
   contents: write
 jobs:
