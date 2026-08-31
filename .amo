@@ -15,7 +15,7 @@
   },
   "model": {
     "inherits": [],
-    "context": ["README.md", "scripts/validate_lab.py", ".github/workflows/lab-safety.yml"],
+    "context": ["README.md", "RECOVERY.md", "scripts/validate_lab.py", ".github/workflows/lab-safety.yml"],
     "rules": [
       "Labs es un sandbox y no una fuente de autoridad sobre otras unidades.",
       "Un candidato no puede auto-declararse verificado para StoreAMO.",
@@ -55,6 +55,6 @@
   },
   "evidence": {
     "status": "inspected",
-    "refs": ["README.md", "scripts/validate_lab.py", ".github/workflows/lab-safety.yml", "scripts/autocheck.sh"]
+    "refs": ["README.md", "RECOVERY.md", "scripts/validate_lab.py", ".github/workflows/lab-safety.yml", "scripts/autocheck.sh"]
   }
 }
